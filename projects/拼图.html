@@ -84,6 +84,7 @@
             <option value="6">6x6</option>
             <option value="9">9x9</option>
         </select>
+        <label></label>
     </div>
 
     <script>
@@ -93,7 +94,8 @@
             this.size = size || 2;
             this.map = document.querySelector(map);
 
-            var cards = null;
+            this.cards = null;
+            this.num = 0;
             _this = this;
         }
 
@@ -122,6 +124,7 @@
 
         Puzzle.prototype.wash = function() {
             // console.log('洗牌');
+            document.querySelector('label').innerHTML = '';
             this.cards = this.map.querySelectorAll('li');
             
             function random() {
@@ -157,6 +160,8 @@
                 };
 
                 val.ondrop = function(event) {
+                    console.log(_this.num);
+                    _this.num ++;
                     var e1 = event.target;
                     var e2 = document.getElementById(event.dataTransfer.getData('text'));
 
@@ -179,7 +184,7 @@
 
                     if (check) {
                         console.log('成功');
-
+                        document.querySelector('label').innerHTML = '拼图成功,步数'+_this.num;
                     }
                 }
             })
@@ -197,6 +202,7 @@
 
         var select = document.querySelector('select');
         select.onchange = function() {
+            document.querySelector('label').innerHTML = '';
             var size = select.value;
             puzzle = new Puzzle('.puzzle',size);
             puzzle.show();
