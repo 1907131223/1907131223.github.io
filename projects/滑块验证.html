@@ -172,7 +172,7 @@
                     window.onmousemove = null;
 
                     let err = puzzle.left - puzzle.X;
-                    if ( err >= -10 && err <= 10 ) {
+                    if ( err >= -5 && err <= 5 ) {
                         slidingBlock.onmousedown = null;
                         slidingBlock.innerHTML = '✔';
                         slidingBlock.style.color = 'lightgreen';
