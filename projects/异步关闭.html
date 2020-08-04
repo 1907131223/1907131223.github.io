@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        #app {
+            background-color: #eee;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* =================    cd-tag 组件样式     ================== */
+        .cdTag {
+            width: 100%;
+            height: 44px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .cdContain {
+            width: calc(100vw + 120px);
+            height: 44px;
+            position: absolute;
+            top: 0;
+
+            /* transition: left .2s; */
+        }
+
+        .cdContain .cdContent {
+            background-color: #fff;
+            width: 100vw;
+            height: 44px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: absolute;
+            top: 0;
+            left: 60px;
+        }
+
+        .cdContain .cdContent>div {
+            padding: 10px;
+        }
+
+        .cdContain .cdChoose {
+            background-color: #07c160;
+            color: #fff;
+            width: 60px;
+            height: 44px;
+            text-align: center;
+            line-height: 44px;
+            position: absolute;
+            top: 0;
+        }
+
+        .cdContain .cdDelete {
+            background-color: #ee0a24;
+            color: #fff;
+            width: 60px;
+            height: 44px;
+            text-align: center;
+            line-height: 44px;
+            position: absolute;
+            right: 0;
+        }
+
+        .trans {
+            transition: left .4s;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <cd-tag :cell='cell' :text='text'></cd-tag>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+        Vue.component('cd-tag', {
+            template: `
+                <div class="cdTag">
+                    <div class="cdContain" :class="{trans:flag}" :style="{left}" @touchstart.stop="start" @touchmove="move" @touchend="end">
+                        <div class="cdChoose" @touchstart.stop="delet" @touchend.stop>选择</div>
+                        <div class="cdContent">
+                            <div>{{cell}}</div>
+                            <div>{{text}}</div>
+                        </div>
+                        <div class="cdDelete" @touchstart.stop="delet" @touchend.stop>删除</div>
+                    </div>
+                </div>
+            `,
+
+            props: {
+                cell: {
+                    default: '单元格',
+                },
+
+                text: {
+                    type: String,
+                    default: '内容',
+                }
+            },
+
+            data() {
+                return {
+                    handleStart: 0,
+                    handleMove: 0,
+                    left: '-60px',
+                    nowNum: -60,
+                    temporaryNum: 0,
+                    flag: true,
+                }
+            },
+
+            methods: {
+                start(event) {
+                    this.flag = true;
+                    this.handleStart = event.targetTouches[0].pageX.toFixed(0);
+                },
+
+                move(event) {
+                    this.flag = false;
+                    this.handleMove = event.targetTouches[0].pageX.toFixed(0);
+                    this.temporaryNum = this.handleMove - this.handleStart;
+                    this.left = this.handleMove - this.handleStart;
+
+                    this.left += this.nowNum;
+                    this.left >= 0 ? this.left = 0 : null;
+                    this.left <= -120 ? this.left = -120 : null;
+                    this.pixel();
+                },
+
+                end(event) {
+                    this.flag = true;
+                    if ((this.nowNum == 0 && this.nowNum + this.temporaryNum >= -60) || (this.nowNum == -120 &&
+                            this.nowNum + this.temporaryNum <= -60) || (this.nowNum == -60 && this.temporaryNum <=
+                            0 && this.temporaryNum >= -15) || (this.nowNum == -60 && this.temporaryNum >= 0 && this
+                            .temporaryNum <= 15)) {
+                        this.left = '-60px';
+                        this.nowNum = -60;
+                        return;
+                    }
+
+                    if (this.temporaryNum == 0) {
+                        this.left = '-60px';
+                        this.nowNum = -60;
+                    }
+
+                    if (this.temporaryNum > 0) {
+                        this.left = '0px'
+                        this.nowNum = 0;
+                    }
+                    if (this.temporaryNum < 0) {
+                        this.left = '-120px';
+                        this.nowNum = -120;
+                    }
+
+                    this.temporaryNum = 0;
+                },
+
+                pixel() {
+                    this.left += 'px';
+                },
+
+
+                delet() {
+                    console.log('删除');
+                }
+            },
+        })
+
+        new Vue({
+            el: '#app',
+
+            data: {
+                cell: '传入的单元格',
+                text: '传入的内容',
+            }
+        })
+    </script>
+</body>
+
+</html>

@@ -102,9 +102,9 @@
                 // 剩余时间计算
                 let hour = Math.floor(timestamp / 1000 / 60 / 60);
                 hour = hour.toString().padStart(2, '0');
-                let mimute = Math.floor((timestamp - hour * 60 * 60 * 1000) / 1000 / 60);
+                let mimute = Math.floor(timestamp / 1000 / 60 % 60);
                 mimute = mimute.toString().padStart(2, '0');
-                let second = Math.floor((timestamp - hour * 60 * 60 * 1000 - mimute * 60 * 1000) / 1000)
+                let second = Math.floor(timestamp / 1000 % 60)
                 second = second.toString().padStart(2, '0');
                 residue[0].innerHTML = `${hour}`;
                 residue[1].innerHTML = `${mimute}`;
